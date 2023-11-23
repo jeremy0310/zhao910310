@@ -7,6 +7,10 @@ db = firestore.client()
 
 from flask import Flask, render_template, request
 from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -18,6 +22,8 @@ def index():
     homepage += "<a href=/about>昭毅簡介網頁</a><br>"
     homepage += "<a href=/search>圖書查詢:</a><br>"
     homepage += "<br><a href=/books>圖書精選</a><br>"
+
+    homepage += "<br><a href=/spider>網路爬蟲擷取子青老師課程資料</a><br>"
     return homepage
 
 @app.route("/mis")
@@ -72,6 +78,24 @@ def books():
         Result += "<img src=" + bk["cover"] + "></img><br><br>"
 
     return Result
+
+@app.route("/spider")
+def spider():
+    info = ""
+
+    url = "https://www1.pu.edu.tw/~tcyang/course.html"
+    Data = requests.get(url)
+    Data.encoding = "utf-8"
+    #print(Data.text)
+    sp = BeautifulSoup(Data.text, "html.parser")
+    result=sp.select(".team-box")
+
+    for x in result:
+        info += x.find("h4").text + "<br>"
+        info += x.find("p").text + "<br>"
+        info += x.find("a").get("href") + "<br>"
+        info += "https://www1.pu.edu.tw/~tcyang/" +x.find("img").get("src") + "<br><br>"
+    return info
 
 if __name__ == "__main__":
     app.run(debug=True)
