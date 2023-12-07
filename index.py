@@ -7,6 +7,7 @@ db = firestore.client()
 
 from flask import Flask, render_template, request
 from datetime import datetime
+make_response, jsonify
 
 import requests
 from bs4 import BeautifulSoup
@@ -205,6 +206,17 @@ def movie_rate():
         doc_ref = db.collection("電影含分級").document(movie_id)
         doc_ref.set(doc)
     return "近期上映電影已爬蟲及存檔完畢，網站最近更新日期為：" + lastUpdate
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    # build a request object
+    req = request.get_json(force=True)
+    # fetch queryResult from json
+    action =  req.get("queryResult").get("action")
+    msg =  req.get("queryResult").get("queryText")
+    info = "動作：" + action + "； 查詢內容：" + msg
+    return make_response(jsonify({"fulfillmentText": info}))
+
 
 
 if __name__ == "__main__":
