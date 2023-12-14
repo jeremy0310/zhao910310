@@ -228,7 +228,29 @@ def webhook():
                 result += "片名：" + dict["title"] + "\n"
                 result += "介紹：" + dict["hyperlink"] + "\n\n"
         info += result
-        
+    elif (action == "MovieDetail"):
+        question =  req.get("queryResult").get("parameters").get("filmq")
+        keyword =  req.get("queryResult").get("parameters").get("any")
+        info = "我是楊子青開發的電影聊天機器人，您要查詢電影的" + question + "，關鍵字是：" + keyword + "\n\n"
+
+        if (question == "片名"):
+            db = firestore.client()
+            collection_ref = db.collection("電影含分級")
+            docs = collection_ref.get()
+            found = False
+            for doc in docs:
+                dict = doc.to_dict()
+                if keyword in dict["title"]:
+                    found = True 
+                    info += "片名：" + dict["title"] + "\n"
+                    info += "海報：" + dict["picture"] + "\n"
+                    info += "影片介紹：" + dict["hyperlink"] + "\n"
+                    info += "片長：" + dict["showLength"] + " 分鐘\n"
+                    info += "分級：" + dict["rate"] + "\n" 
+                    info += "上映日期：" + dict["showDate"] + "\n\n"
+            if not found:
+                info += "很抱歉，目前無符合這個關鍵字的相關電影喔"
+
     return make_response(jsonify({"fulfillmentText": info}))
  
 
