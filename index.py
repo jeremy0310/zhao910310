@@ -250,7 +250,7 @@ def webhook():
                     info += "上映日期：" + dict["showDate"] + "\n\n"
             if not found:
                 info += "很抱歉，目前無符合這個關鍵字的相關電影喔"
-    elif (action == "buttom"):
+    elif (action == "battery"):
         dist =  req.get("queryResult").get("parameters").get("dist")
         info = "為您查詢 " + dist + " 的電動機車加油站\n\n"
         url = "https://vipmbr.cpc.com.tw/openData/electricmotoData"
