@@ -250,6 +250,19 @@ def webhook():
                     info += "上映日期：" + dict["showDate"] + "\n\n"
             if not found:
                 info += "很抱歉，目前無符合這個關鍵字的相關電影喔"
+    elif (action == "gogoro"):
+        gogoro =  req.get("queryResult").get("parameters").get("gogoro")
+        info = "為您查詢 " + gogoro + " 的電動機車加油站\n\n"
+        url = "https://vipmbr.cpc.com.tw/openData/electricmotoData"
+        Data = requests.get(url)
+        JsonData = json.loads(Data.text)
+        Result = ""
+        Road = input("請輸入查詢目前所在區域：")
+        for item in JsonData:
+          if Road in item["地址"]:
+             Result += item["站名"] + "，地址:" + item["地址"] + "服務時間:" + item["提供服務時段"] + "\n\n"
+    if Result == "":
+        Result = "抱歉，查無相關資料！"
 
     return make_response(jsonify({"fulfillmentText": info}))
  
