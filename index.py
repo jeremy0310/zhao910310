@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, make_response, jsonify
 from datetime import datetime
 
 
-import requests
+import requests,json
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
@@ -255,8 +255,10 @@ def webhook():
         info = "為您查詢 " + dist + " 的電動機車加油站\n\n"
         url = "https://vipmbr.cpc.com.tw/openData/electricmotoData"
         Data = requests.get(url)
+        JsonData = json.loads(Data.text)
+        for item in JsonData:
         
-        info += item["站名"] + "，地址:" + item["地址"] + "服務時間:" + item["提供服務時段"] + "\n\n"
+            info += item["站名"] + "，地址:" + item["地址"] + "服務時間:" + str(item["提供服務時段"]) + "\n\n"
     
     return make_response(jsonify({"fulfillmentText": info}))
  
