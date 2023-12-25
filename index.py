@@ -259,6 +259,8 @@ def webhook():
         for item in JsonData:
             if dist in item["地址"]:
                 info += item["站名"] + "，地址:" + item["地址"] + "服務時間:" + str(item["提供服務時段"]) + "\n\n"
+        if info == "為您查詢 " + dist + " 的電動機車加油站\n\n":
+            info += "抱歉目前沒有相關的據點"
     
     return make_response(jsonify({"fulfillmentText": info}))
  
