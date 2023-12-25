@@ -257,8 +257,8 @@ def webhook():
         Data = requests.get(url)
         JsonData = json.loads(Data.text)
         for item in JsonData:
-        
-            info += item["站名"] + "，地址:" + item["地址"] + "服務時間:" + str(item["提供服務時段"]) + "\n\n"
+            if dist in item["地址"]:
+                info += item["站名"] + "，地址:" + item["地址"] + "服務時間:" + str(item["提供服務時段"]) + "\n\n"
     
     return make_response(jsonify({"fulfillmentText": info}))
  
